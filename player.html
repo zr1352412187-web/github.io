@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>测试电影 01 - 播放 - 电影之家</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- 顶部导航栏 -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            🎬 电影之家
+        </div>
+
+
+        <nav class="nav-menu">
+
+            <a href="index.html">首页</a>
+
+            <a href="#">电影</a>
+
+            <a href="#">分类</a>
+
+            <a href="#">排行榜</a>
+
+        </nav>
+
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                placeholder="搜索电影..."
+            >
+
+            <button>
+                搜索
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- 视频播放区域 -->
+
+    <main class="player-container">
+
+
+        <div class="video-box">
+
+            <video id="movie-player" controls poster="images/movie1.jpg">
+                <source id="movie-source" src="videos/test.mp4" type="video/mp4">
+                      您的浏览器不支持视频播放。
+
+            </video>
+
+        </div>
+
+
+        <!-- 视频标题 -->
+
+        <div class="player-info">
+
+            <h1>
+                测试电影 01
+            </h1>
+
+
+            <p class="player-type">
+                科幻 / 剧情
+            </p>
+
+
+            <p class="player-description">
+                这是电影网站的视频播放测试页面。
+                当前播放的是用于网站开发测试的视频。
+            </p>
+
+        </div>
+
+
+        <!-- 播放控制 -->
+
+        <div class="player-navigation">
+
+            <a href="movie.html">
+                ← 返回电影详情
+            </a>
+
+            <a href="index.html">
+                返回首页
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- 页脚 -->
+
+    <footer class="footer">
+
+        <p>
+            © 2026 电影之家 · 电影世界
+        </p>
+
+    </footer>
+
+<script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>电影之家</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- 顶部导航栏 -->
+    <header class="navbar">
+
+        <div class="logo">
+            🎬 电影之家
+        </div>
+
+        
+    <nav class="nav-menu">
+        <a href="index.html">首页</a>
+        <a href="#hot-movies">电影</a>
+        <a href="#movie-categories">分类</a>
+        <a href="#ranking">排行榜</a>
+    </nav>
+
+
+        
+        <div class="search-box">
+            <input id="search-input" type="text" placeholder="请输入电影名称...">
+            <button id="search-button" type="button">搜索</button>
+        </div>
+
+        <p id="search-message"></p>
+
+
+    </header>
+
+
+    <!-- 首页大横幅 -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1>精彩电影，尽在电影之家</h1>
+
+            <p>
+                汇聚各种类型的精彩电影，
+                动作、喜剧、爱情、科幻、悬疑……
+                找到你喜欢的电影。
+            </p>
+
+            <a href="#" class="hero-button">
+                ▶ 开始观看
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- 热门电影 -->
+    <main class="container">
+
+<div id="movie-categories" class="movie-categories">
+    <button class="category-button active" data-category="全部">全部电影</button>
+    <button class="category-button" data-category="科幻">科幻</button>
+    <button class="category-button" data-category="动作">动作</button>
+    <button class="category-button" data-category="喜剧">喜剧</button>
+    <button class="category-button" data-category="冒险">冒险</button>
+</div>
+<div id="ranking" class="ranking-section">
+    <h2 class="section-title">🏆 电影排行榜</h2>
+    <div id="ranking-movies" class="movie-grid"></div>
+</div>
+        <h2 class="section-title">
+            🔥 热门电影
+        </h2>
+
+        <div class="movie-grid" id="hot-movies">
+</div>
+
+
+        <!-- 最新电影 -->
+        <h2 class="section-title">
+            🆕 最新电影
+        </h2>
+
+        <div class="movie-grid" id="latest-movies">
+</div>
+
+    </main>
+
+
+    <!-- 页脚 -->
+    <footer class="footer">
+
+        <p>
+            © 2026 电影之家 · 电影世界
+        </p>
+
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
