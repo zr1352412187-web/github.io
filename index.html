@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月影之间 · 唯美小说馆</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23cfc4ff'/%3E%3Cstop offset='1' stop-color='%238d82d0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' fill='url(%23g)'/%3E%3Cpath d='M58 22a32 32 0 1 0 0 56 26 26 0 0 1 0-56z' fill='%23fff' opacity='.85'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap">
+<style>
+  :root{
+    --ink:#343a5c;
+    --muted:#8a8aa3;
+    --purple:#9588c8;
+    --purple-deep:#6c5fa8;
+    --lilac:#cfc4ff;
+    --pink:#e9c3e4;
+    --night:#1c2350;
+    --night-2:#333d69;
+    --paper:#fbf9ff;
+    --white:#ffffff;
+    --line:#efeaf8;
+    --serif:"Noto Serif SC", "Songti SC", "STSong", serif;
+    --sans:"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+    --hand:"Ma Shan Zheng", "KaiTi", "STKaiti", cursive;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  button,input{font:inherit}
+  img{display:block}
+
+  /* ============ 飘落花瓣 ============ */
+  .petals{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .petal{position:absolute;top:-6%;opacity:0;will-change:transform}
+  @keyframes fall{
+    0%{transform:translateY(-6vh) translateX(0) rotate(0);opacity:0}
+    8%{opacity:.7}
+    100%{transform:translateY(108vh) translateX(var(--sway)) rotate(var(--spin));opacity:0}
+  }
+
+  /* ============ 顶部导航 ============ */
+  .navbar{
+    position:sticky;top:0;z-index:50;
+    height:74px;padding:0 6%;
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(251,249,255,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{font-family:var(--serif);font-size:22px;font-weight:800;letter-spacing:2px;display:flex;align-items:center;gap:9px}
+  .logo svg{flex:none}
+  .logo span{color:var(--purple-deep);font-weight:900}
+  .nav-links{display:flex;align-items:center;gap:28px;font-size:14px;color:#62647d}
+  .nav-links a{position:relative;padding:6px 2px;transition:color .2s}
+  .nav-links a:hover{color:var(--purple-deep)}
+  .nav-links a.active{color:var(--purple-deep);font-weight:600}
+  .nav-links a.active::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--lilac),var(--purple))}
+  .search{
+    width:210px;padding:10px 16px;
+    border:1px solid #e8e2f4;border-radius:24px;outline:none;
+    background:#f6f3fc;color:var(--ink);transition:border .2s,box-shadow .2s;
+  }
+  .search:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(149,136,200,.15)}
+
+  /* ============ Hero ============ */
+  .hero{
+    position:relative;overflow:hidden;
+    min-height:430px;margin:22px 3% 0;border-radius:22px;
+    display:flex;align-items:center;
+    background:
+      linear-gradient(90deg, rgba(16,21,48,.72) 0%, rgba(16,21,48,.42) 48%, rgba(16,21,48,.08) 100%),
+      url("images/hero.png") center 38% / cover no-repeat;
+    box-shadow:0 18px 46px rgba(47,46,91,.18);
+    color:#fff;
+  }
+  .hero::before{ /* 底部光晕 */
+    content:"";position:absolute;left:0;right:0;bottom:-60%;height:70%;
+    background:radial-gradient(ellipse 60% 70% at 30% 100%, rgba(207,196,255,.55), transparent 70%);
+  }
+  .hero::after{ /* 月亮 */
+    content:"☾";position:absolute;right:11%;top:-42px;
+    font-family:serif;font-size:250px;line-height:1;
+    color:rgba(255,255,255,.14);text-shadow:0 0 60px rgba(224,220,255,.4);
+    pointer-events:none;animation:glow 6s ease-in-out infinite;
+  }
+  @keyframes glow{0%,100%{opacity:.8}50%{opacity:1}}
+  .hero-copy{position:relative;z-index:2;max-width:520px;padding:60px 7%}
+  .eyebrow{color:#d6c9ff;font-size:12px;letter-spacing:5px}
+  .hero h1{margin:22px 0 16px;font-family:var(--serif);font-size:clamp(34px,4.4vw,52px);line-height:1.35;letter-spacing:3px}
+  .hero p{color:#dfe0f0;font-size:14.5px;line-height:2;max-width:430px}
+  .hero-button{
+    display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:13px 28px;
+    border-radius:30px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#c9b6ff,#9588d8);color:#fff;
+    font-size:14px;letter-spacing:1px;transition:transform .2s,box-shadow .2s;
+    box-shadow:0 8px 22px rgba(121,102,200,.4);
+  }
+  .hero-button:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(121,102,200,.5)}
+
+  /* ============ 主区域 ============ */
+  main{max-width:1240px;margin:0 auto;padding:54px 26px 20px}
+  .section-heading{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px}
+  .section-heading .tt{display:flex;align-items:baseline;gap:14px}
+  .section-heading h2{margin:0;font-family:var(--serif);font-size:26px;letter-spacing:2px}
+  .section-heading .sub{margin:8px 0 0;color:var(--muted);font-size:13px}
+  .more{color:var(--purple-deep);font-size:13px;display:inline-flex;align-items:center;gap:4px}
+  .more:hover{color:#574a96}
+
+  .book-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+  .book-card{
+    background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;
+    transition:transform .28s,box-shadow .28s;
+  }
+  .book-card:hover{transform:translateY(-6px);box-shadow:0 16px 38px rgba(85,76,133,.14)}
+  .cover{position:relative;height:400px;overflow:hidden}
+  .cover img{width:100%;height:100%;object-fit:fill;transition:transform .6s ease}
+  .book-card:hover .cover img{transform:scale(1.045)}
+  .cover .shade{
+    position:absolute;left:0;right:0;bottom:0;height:38%;
+    background:linear-gradient(180deg,transparent,rgba(20,24,55,.45));
+    display:flex;align-items:flex-end;padding:14px 16px;
+  }
+  .cover .shade .ghost{color:#fff;font-size:13px;letter-spacing:2px;opacity:0;transform:translateY(6px);transition:.3s}
+  .book-card:hover .shade .ghost{opacity:1;transform:none}
+  .book-info{padding:16px}
+  .book-info h3{margin:0 0 8px;font-family:var(--serif);font-size:18px;letter-spacing:1px}
+  .pairing{color:#9b8cbe;font-size:12px}
+  .description{min-height:40px;margin:11px 0;color:#8b8ca0;font-size:12px;line-height:1.8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .meta-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .tag{padding:4px 9px;border-radius:20px;background:#f1edfb;color:#8177a8;font-size:11px}
+  .read-cta{
+    display:block;width:100%;text-align:center;padding:10px;border:none;border-radius:22px;cursor:pointer;
+    background:linear-gradient(135deg,#e4dcff,#c6b8f2);color:#5d5192;font-size:13px;font-weight:600;letter-spacing:1px;
+    transition:.2s;
+  }
+  .read-cta:hover{background:linear-gradient(135deg,#cfc0ff,#a99adf);color:#3f3477}
+
+  /* ============ 最近更新 ============ */
+  .updates{margin-top:56px}
+  .update-card{
+    background:linear-gradient(120deg,#ffffff, #f6f1ff);border:1px solid var(--line);border-radius:18px;
+    padding:6px 24px;overflow:hidden;
+  }
+  .update-item{
+    display:grid;grid-template-columns:150px 1fr auto auto;gap:18px;align-items:center;
+    padding:17px 0;border-bottom:1px dashed #e6def4;font-size:13.5px;cursor:pointer;transition:background .2s;
+  }
+  .update-item:last-child{border-bottom:0}
+  .update-item:hover{background:rgba(207,196,255,.10)}
+  .update-title{font-family:var(--serif);font-weight:700;letter-spacing:1px}
+  .update-chapter{color:#6d6f89}
+  .update-time{color:#a9a9bd;font-size:12px}
+  .update-arrow{color:#c3b6ec}
+
+  /* ============ 页脚 ============ */
+  footer{
+    margin-top:70px;padding:34px 20px 40px;text-align:center;
+    background:linear-gradient(180deg,transparent,#e9e3f7);
+    color:#8c8ba1;font-size:12px;line-height:2.1;
+  }
+  footer .foot-deco{font-size:26px;color:#cfc4ff;letter-spacing:10px}
+
+  /* ============ 装饰花枝（SVG 边饰） ============ */
+  .branch{position:absolute;color:#e3d6ff;pointer-events:none;z-index:1}
+  .branch svg{width:100%;height:100%}
+
+  /* ============ 视图容器 ============ */
+  .view{display:none}
+  .view.show{display:block}
+
+  /* ============ 空态 ============ */
+  .empty{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+
+  /* ============ 详情视图 ============ */
+  .book-detail{max-width:1080px;margin:0 auto;padding:40px 26px}
+  .book-detail-head{
+    display:grid;grid-template-columns:260px 1fr;gap:40px;align-items:center;
+    background:linear-gradient(135deg,#2b2f58,#4a477e);border-radius:22px;padding:34px;color:#fff;
+    box-shadow:0 20px 50px rgba(47,46,91,.22);position:relative;overflow:hidden;
+  }
+  .book-detail-head::after{content:"☾";position:absolute;right:3%;bottom:-46px;font-family:serif;font-size:200px;color:rgba(255,255,255,.06);pointer-events:none}
+  .detail-cover{width:260px;height:360px;border-radius:12px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.35);position:relative;z-index:2}
+  .detail-cover img{width:100%;height:100%;object-fit:fill}
+  .detail-copy{position:relative;z-index:2}
+  .detail-copy h1{margin:0 0 6px;font-family:var(--serif);font-size:34px;letter-spacing:3px}
+  .detail-pairing{color:#d6c9ff;font-size:14px;letter-spacing:1px}
+  .detail-tags{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+  .detail-tags .tag{background:rgba(255,255,255,.14);color:#efe9ff}
+  .detail-desc{color:#e0e0f0;font-size:14px;line-height:2;margin:6px 0 18px;max-width:560px}
+  .detail-meta{display:flex;gap:26px;font-size:13px;color:#cdc6ec}
+  .detail-meta b{display:block;font-size:19px;color:#fff;font-family:var(--serif);font-weight:700}
+  .back-btn{
+    display:inline-flex;align-items:center;gap:6px;margin-bottom:26px;padding:9px 18px;border:none;border-radius:20px;cursor:pointer;
+    background:#efeafb;color:#6c5fa8;font-size:13px;transition:.2s;
+  }
+  .back-btn:hover{background:#e2d8fb}
+  .chapter-list{max-width:1080px;margin:34px auto 0;padding:0 26px}
+  .chapter-list h2{font-family:var(--serif);font-size:22px;letter-spacing:2px;margin:0 0 18px;display:flex;align-items:center;gap:10px}
+  .chapter-list h2::before{content:"";width:5px;height:20px;border-radius:3px;background:linear-gradient(180deg,var(--lilac),var(--purple))}
+  .chapter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .chapter-item{
+    display:flex;align-items:center;justify-content:space-between;padding:15px 18px;
+    background:#fff;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:.2s;
+  }
+  .chapter-item:hover{border-color:var(--purple);background:#f8f4ff;transform:translateY(-2px)}
+  .chapter-item .cn{font-size:14px;font-weight:500}
+  .chapter-item .cd{color:#b3a9d6;font-size:11px;letter-spacing:2px}
+
+  /* ============ 阅读视图 ============ */
+  .reader{max-width:760px;margin:0 auto;padding:30px 26px 80px;position:relative}
+  .reader-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .reader-book{display:flex;align-items:center;gap:12px}
+  .reader-book img{width:52px;height:70px;border-radius:6px;object-fit:fill;box-shadow:0 6px 14px rgba(47,46,91,.2)}
+  .reader-book .bt{font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:1px}
+  .reader-book .bs{color:var(--muted);font-size:12px}
+  .reader-ctl{display:flex;align-items:center;gap:8px}
+  .ctl-btn{
+    padding:8px 14px;border:1px solid #e5def4;background:#fff;border-radius:18px;color:#6c5fa8;cursor:pointer;font-size:13px;transition:.2s;
+  }
+  .ctl-btn:hover{background:#f3eeff}
+  .reader-title{text-align:center;margin:26px 0 34px}
+  .reader-title .chapt{font-family:var(--serif);font-size:30px;letter-spacing:4px}
+  .reader-title .divider{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:18px;color:#cfc4ff}
+  .reader-title .divider::before,.reader-title .divider::after{content:"";width:52px;height:1px;background:linear-gradient(90deg,transparent,#d9ccf7)}
+  .reader-title .divider::after{background:linear-gradient(90deg,#d9ccf7,transparent)}
+  .reader-body{font-size:17px;line-height:2.15;color:#45496b;letter-spacing:.5px}
+  .reader-body p{margin:0 0 1.6em;text-indent:2em}
+  .reader-body .hand{font-family:var(--hand);font-size:22px;text-indent:0;text-align:center;color:#8d82c8;letter-spacing:3px;margin:1.2em 0}
+  .reader-nav{display:flex;align-items:center;justify-content:space-between;margin-top:50px;padding-top:24px;border-top:1px dashed #e2d9f4}
+  .reader-nav button{
+    padding:12px 24px;border:none;border-radius:24px;cursor:pointer;font-size:14px;
+    background:linear-gradient(135deg,#e6dcff,#c9b8f2);color:#5d5192;font-weight:600;transition:.2s;
+  }
+  .reader-nav button:hover{background:linear-gradient(135deg,#cfc0ff,#a99adf)}
+  .reader-nav button:disabled{opacity:.4;cursor:not-allowed}
+  .reader-nav .center{color:#c2b6e8;font-size:12px;letter-spacing:1px}
+
+  /* ============ 字号菜单 ============ */
+  .font-menu{
+    position:absolute;right:8px;top:58px;background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:10px;display:none;gap:6px;box-shadow:0 12px 30px rgba(47,46,91,.12);z-index:30;
+  }
+  .font-menu.show{display:flex}
+  .font-menu button{width:34px;height:34px;border:1px solid #e8e1f6;border-radius:50%;background:#fff;cursor:pointer;color:#6c5fa8;font-size:13px}
+  .font-menu button.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+  /* ============ 移动端 ============ */
+  @media (max-width:880px){
+    .book-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .cover{height:auto;aspect-ratio:3/4}
+    .cover img{object-fit:cover}
+    .book-detail-head{grid-template-columns:1fr;text-align:center;padding:28px}
+    .detail-cover{margin:0 auto}
+    .detail-desc{margin-left:auto;margin-right:auto}
+    .detail-meta{justify-content:center}
+    .chapter-grid{grid-template-columns:1fr}
+    .update-item{grid-template-columns:1fr auto;row-gap:4px}
+    .update-time{display:none}
+    .navbar{height:auto;flex-wrap:wrap;gap:10px;padding:14px 5%}
+    .nav-links{order:3;width:100%;justify-content:space-between;gap:12px}
+    .search{width:100%}
+    .reader{width:100%;max-width:100%}
+    .reader-body{font-size:16.5px}
+  }
+  @media (max-width:520px){
+    .hero{min-height:380px}
+    .hero-copy{padding:44px 8%}
+    .book-grid{grid-template-columns:1fr}
+    .book-detail{padding:24px 14px}
+    .detail-cover{width:200px;height:280px}
+    .reader-top{flex-direction:column;gap:12px;align-items:flex-start}
+    .reader-nav{flex-direction:column;gap:12px}
+    .reader-nav .center{order:-1}
+  }
+</style>
+</head>
+<body>
+
+<!-- 飘落花瓣 -->
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<!-- ============ 顶部导航 ============ -->
+<header class="navbar">
+  <a class="logo" href="#home" onclick="go('home')">
+    <svg width="26" height="26" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfc4ff"/><stop offset="1" stop-color="#8d82d0"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="url(#lg)"/><path d="M58 22a32 32 0 1 0 0 56 26 26 0 0 1 0-56z" fill="#fff" opacity=".85"/></svg>
+    月影<span>之间</span>
+  </a>
+  <nav class="nav-links" id="navLinks">
+    <a href="#home" data-nav="home" onclick="go('home')">首页</a>
+    <a href="#featured" data-nav="featured" onclick="go('home')">精选作品</a>
+    <a href="#updates" data-nav="updates" onclick="go('home')">最近更新</a>
+  </nav>
+  <input class="search" id="searchInput" type="search" placeholder="搜索作品或角色..." aria-label="搜索小说">
+</header>
+
+<!-- ============ 视图：首页 ============ -->
+<section class="view show" id="view-home">
+  <div class="hero" id="home">
+    <div class="hero-copy">
+      <div class="eyebrow">MOONLIGHT FICTION</div>
+      <h1>在月光里，<br>收藏每一段心动</h1>
+      <p>这里有属于他们的秘密，也有属于你的故事。点开任意封面，开始一段只属于两个人的旅程。</p>
+      <button class="hero-button" onclick="scrollToWorks()">
+        开始阅读
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 4v16m0 0 6-6m-6 6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <main>
+    <!-- 精选作品 -->
+    <section id="featured" style="position:relative">
+      <div class="section-heading">
+        <div>
+          <div class="tt"><h2>精选作品</h2><span style="color:#cfc4ff">✦</span></div>
+          <p class="sub">每一段故事，都有只属于他们的秘密。</p>
+        </div>
+        <a class="more" href="#updates" onclick="scrollToWorks()">发现更多</a>
+      </div>
+      <div class="book-grid" id="bookGrid"></div>
+      <p class="empty" id="emptyMessage" hidden>没有找到相关作品，换个关键词试试吧。</p>
+    </section>
+
+    <!-- 最近更新 -->
+    <section class="updates" id="updates">
+      <div class="section-heading">
+        <div>
+          <div class="tt"><h2>最近更新</h2><span style="color:#e9c3e4">✦</span></div>
+          <p class="sub">故事还在继续。</p>
+        </div>
+      </div>
+      <div class="update-card" id="updateList"></div>
+    </section>
+  </main>
+</section>
+
+<!-- ============ 视图：作品详情 ============ -->
+<section class="view" id="view-book"></section>
+
+<!-- ============ 视图：阅读 ============ -->
+<section class="view" id="view-read">
+  <div class="reader" id="readerRoot"></div>
+</section>
+
+<footer>
+  <div class="foot-deco">✦ ☾ ✦</div>
+  月影之间 · 一个收藏故事与心动的角落<br>
+  本站作品为原创演示内容，仅供交流欣赏。
+</footer>
+
+<script>
+/* =====================================================
+   小说数据
+===================================================== */
+const NOVELS = [
+  {
+    id:"yuexia", title:"月下旧约", pairing:"顾月白 × 沈既明",
+    tags:["奇幻","羁绊","慢热"], genre:"奇幻 · 宿命",
+    desc:"十年了。每个满月之夜，他都会回到那座旧天台，等一个或许再也不会来的人。直到这一夜，月光下的身影如期而至。一段被月光封印的旧约，缓缓在两人之间苏醒。",
+    status:"连载中", words:"1.2万字", chapters:"4章",
+    cover:"images/novel4.jpeg",
+    chapters:[
+      {t:"第一章 · 十年之约", body:`又是满月。顾月白推开旧天台的铁门时，指尖先于月色凉了下来。
+这座天台他们已经十年没来了。城市在脚下改换了太多模样，唯独这里，还是十年前那盏坏掉的灯，还是那道看得到月亮的栏杆。
+他记得，那年初秋也是这样的满月。少年沈既明站在栏杆边，回头冲他笑，说了一句几乎被风吹散的话——「每逢月圆，我都会在这里等你。」
+当时顾月白以为那不过是一句少年气盛玩笑话。他等了三个月，六个月，一年。等到沈既明从那座城市里彻底消失，他才明白，那句话原是告别。
+可今夜，他不知道为什么又回到了这里。也许是加班到深夜的恍惚，也许只是顺路。
+月色正圆。
+铁门在身后轻轻合上，风里忽然多了另一种气息，浅淡的、清冽的，像冬夜里化开的雪水。
+「好久不见。」
+一个声音从阴影里传来，带着十年都未曾变过的温润笑意。
+顾月白僵在原地，心跳几乎停了一拍。
+沈既明就站在那盏坏掉的灯下，白发被月光镀上一层薄薄的银。他穿着十年前那件浅色衬衫，好像这十年光阴，从未在他身上走过。
+「你……」顾月白喉咙发紧，「你怎么——」
+「我答应过你，每逢月圆，都会在这里等你。」沈既明缓步走近，月光从他肩头滑落，「只是这一次，我来晚了十年。」`},
+      {t:"第二章 · 玉镯", body:`那枚玉镯被沈既明摊在掌心时，顾月白的呼吸又停住了。
+那是母亲留给他的东西。十年前搬家那天，他把它落在了那间旧屋的抽屉里，从此再没见过。
+「你从哪儿找到的？」
+「那间房子，十年前我买下来了。」沈既明说得很轻，「我想，你总有一天会回来拿它的。」
+顾月白忽然不知道该说什么。他低头看着那枚温润的玉，指腹轻轻摩挲过上面的刻痕，像是摩挲一段被遗忘的时光。
+「为什么是我？」过了很久，他才开口，声音有些哑，「十年了，你为什么偏偏要回来找我。」
+沈既明没有立刻回答。他偏过头，看着天边那轮满月，目光里藏着一层顾月白读不懂的东西。
+「因为你是唯一记得那个约定的人。」他说，「也是唯一……能让我守约的人。」
+夜风卷着几点花瓣掠过，落在两人之间的地面上。顾月白忽然觉得，眼前的沈既明好像隔着一层薄薄的月光，既近，又远。`},
+      {t:"第三章 · 月神的守约人", body:`月亮升到中天的时候，沈既明终于开了口。
+「你听过月神的守约人吗？」他望着那轮月亮，「每隔一百年，人间会有一个被月光选中的人。他们要替月亮守住一个承诺——守满十年，才算完成。」
+「你就是那个人？」
+沈既明没有否认。「十年前的满月之夜，我遇见你。那一刻我就知道，你就是我要守的那个约定。」
+顾月白怔怔地看着他。那些被他埋进心底的碎片忽然翻涌上来——少年沈既明的欲言又止，突如其来的消失，还有那句每逢月圆都像泡影的话。
+「所以……你来，是为了完成任务？」
+「一开始是。」沈既明低下头，指尖轻轻碰了碰掌心的玉镯，「可后来不是了。我记不清从什么时候起，守约不再是为了月亮，而是为了能在满月之夜，再见到你一次。」
+风忽然静了。花瓣停在半空，连月光都好像凝住了一瞬。
+顾月白看着他，忽然笑了，眼眶却有些发烫。「那这一次，你能不能守久一点。」
+「久到多久？」
+「久到……你不用再替月亮守着谁。」
+月光落下来，落在两个人之间。沈既明没有再说话，只是把那枚玉镯，轻轻放回顾月白掌心，然后覆上自己的手。
+这一夜的月，圆得像一个终于被兑现的承诺。`},
+      {t:"第四章 · 满月（待续）", body:null}
+    ]
+  },
+  {
+    id:"xinji", title:"未寄出的信", pairing:"江屿 × 周沉",
+    tags:["校园","暗恋","治愈"], genre:"校园 · 暗恋",
+    desc:"写了九十九封信，一封都没有寄出去。海边那只生了锈的旧信箱，藏着一个少年整个青春的心事。直到第一百封信那天，信箱前多了一个人——一个总在下雨天出现的少年。",
+    status:"连载中", words:"1.1万字", chapters:"4章",
+    cover:"images/novel3.jpeg",
+    chapters:[
+      {t:"第一章 · 第一百封信", body:`江屿数着，这是第一百封信。
+他把信纸折好，装进信封，在收件人那一栏写下「周沉」两个字，笔尖顿了顿，又放下。
+海边那只旧信箱生了锈，海风一吹就嘎吱作响。江屿蹲下来，把信举到箱口，却迟迟没有放进去。
+前九十九封信，都是这样。他写了一个夏天的心事，却一封也没有寄出去。
+「写给你的信，就该交到你手上。」
+身后忽然响起一道声音。江屿吓了一跳，回过头，看见一个寸头少年靠在路灯下，手里夹着一根没点燃的烟，目光却落在他手里的信封上。
+「你、你是——」
+「周沉。」少年自报家门，语气随随便便的，「常来这片海，怎么从没见过你往信箱里投过东西？」
+江屿的脸一下子红了。他飞快地把信封塞进口袋，含糊地应了一声，转身就想走。
+「喂。」周沉在身后叫住他，「那封信，是写给谁的？」
+海风把这句话吹得七零八落。江屿没有回头，耳朵却红透了。
+「……要你管。」`},
+      {t:"第二章 · 雨天", body:`再见到周沉，是一个雨天。
+海边的雨来得又快又急，江屿没带伞，只能在信箱边的屋檐下躲雨。浪花翻涌着扑上礁石，把整个海面都搅成一片灰。
+「这么巧。」
+一把黑伞忽然罩过头顶。周沉不知道什么时候站到他身边，伞微微往他这边偏，自己半边肩膀都淋湿了。
+「你怎么在这里。」江屿往后缩了缩，声音闷闷的。
+「找你的信。」周沉答得理直气壮，「你那封信，到底写给谁的？」
+江屿的心跳漏了一拍。他低下头，看着雨水顺着伞沿滴落，在脚边溅起小小的水花。
+「……写给你的。」
+这句话轻得像被雨声吞没。可周沉还是听见了。他愣了一下，伞柄在掌心转了转，忽然笑了。
+「写给我的？」他重复了一遍，声音里带着一点不易察觉的认真，「那怎么不寄给我？」
+「因为……」江屿咬了咬唇，「我怕你看了以后，就不再来了。」
+雨幕里，周沉沉默了很久。久到江屿几乎以为他要转身走了。
+「那要看信里写了什么。」周沉终于说，声音放得很轻，「走吧，去那边的咖啡馆。你把信给我看看。」`},
+      {t:"第三章 · 收件人", body:`咖啡馆里暖气融融，杯里的热可可冒着白气。
+江屿坐在窗边，手心里攥着那封第一百封信，指尖都有些发白。周沉坐在对面，耐心地等。
+「信里……写了什么？」周沉问。
+「写了……」江屿张了张嘴，又闭上。过了好一会儿，他才把信纸轻轻推到桌面，「你自己看吧。」
+周沉展开信纸。信不长，字迹却工整得近乎虔诚。他看完，抬起头，目光落在江屿低垂的睫毛上。
+「原来你写了一个夏天。」
+「嗯。」江屿小声说，「从你第一次帮我把掉进海里的本子捞起来，我就开始写了。一封一封，写了九十九封，都没敢寄。」
+周沉看着他，忽然把信纸折好，郑重地放进口袋。
+「那从这一封开始，」他说，「以后的信，你直接交给我。我保证，每一封都会好好收着。」
+江屿愣愣地抬起头，眼眶忽然有点热。窗外，雨不知什么时候停了，一道浅浅的月光从云缝里漏下来，落在两个人之间。
+「那……那我写。」江屿弯起眼睛，声音轻轻的，「以后每天，都写一封给你。」
+周沉笑了，伸手轻轻揉了揉他的发顶。「好，我等你。」`},
+      {t:"第四章 · 海风（待续）", body:null}
+    ]
+  },
+  {
+    id:"lingdian", title:"零点以后", pairing:"林疏 × 霍临",
+    tags:["都市","重逢","暧昧"], genre:"都市 · 重逢",
+    desc:"城市的灯火一盏盏熄灭，医院的天台却还亮着一盏。凌晨零点，急诊医生林疏遇到一个不该出现在这里的男人。那是许多年前不告而别的故人，也是他不敢再提起的名字。",
+    status:"连载中", words:"1.3万字", chapters:"4章",
+    cover:"images/novel1.jpeg",
+    chapters:[
+      {t:"第一章 · 夜归人", body:`急诊室的灯灭了又亮，凌晨零点，林疏才终于能喘一口气。
+他脱了白大褂，揉了揉发酸的后颈，推开安全门走上天台。夜风灌进来，带着一丝潮气，也带着一点若有若无的烟味。
+「医院天台，不能抽烟。」
+他随口说了一句，却在看清那个人的瞬间，声音顿住了。
+一个男人靠在栏杆边，黑制服上缀着银色的装饰，在月光下泛着冷光。他的头发是纯粹的白，指间夹着烟，正抬头看远处渐渐沉入灯海的城市。
+「好久不见，林疏。」
+那人偏过头，笑了。嗓音低沉，带着一点懒洋洋的漫不经心，却像一把钥匙，精准地撬开了林疏封存多年的记忆。
+「……霍临。」
+林疏叫出这个名字的时候，指尖几乎要掐进掌心。
+他想起很多年前的雨夜，想起那个说「等我回来」却再没回头的人。想起自己守在医院走廊整整一夜，等来一通没有人接听的电话。
+「你怎么在这里。」他压着声音，一字一句地问。
+「路过。」霍临捻灭烟，目光落在他脸上，顿了顿，「顺便，来找一个欠我解释的人。」`},
+      {t:"第二章 · 旧日心事", body:`「欠你解释的人？」林疏重复了一遍，声音里带着一点讽意，「该要解释的，是我才对吧。」
+霍临没接话。他靠着栏杆，从口袋里摸出一样东西，递到林疏面前。
+那是一枚旧胸针，边缘已经磨得发亮。林疏认得，是他大学时送给霍临的毕业礼物。
+「我走那年，你送我的。」霍临说，「我一直带着。」
+林疏的心狠狠揪了一下。「你既然一直带着……为什么这么多年，一个消息都没有。」
+「因为我怕。」
+「怕什么？」
+「怕你等。」霍临的声音低下去，「怕你知道，我那时候没有能力给你一个确定的未来，怕你等了我，最后却等不到结果。」
+夜风忽然大了一些，把他的话吹得有些模糊。林疏站在原地，眼眶发酸。
+「霍临，」他叫了一声，「你知道我那时候最怕的是什么吗？」
+「什么？」
+「我最怕的，不是你给不了我未来。是你连一个让我等的理由都不给我。」
+霍临怔住了。月光落在他白发上，把那双原本漫不经心的眼睛照得有些发烫。
+过了很久，他忽然笑了，声音哑哑的。「那现在……还来得及吗？」
+林疏别过头，声音闷闷的。「零点以后，你在这里等我。等我愿意的时候，我告诉你答案。」`},
+      {t:"第三章 · 零点之约", body:`从那一天起，医院天台成了两人心照不宣的地方。
+每个零点，林疏忙完最后一批病人，推开安全门，总能看到霍临靠在老位置上，指间夹着没点的烟，等他。
+他们很少说话，只是并肩站着，看城市在脚下一点点沉进夜色，又看路灯一盏盏亮起。
+「你那个答案，」某个夜里，霍临忽然开口，「想好了没有。」
+林疏没有立刻回答。他看着远处最后一扇窗户熄了灯，才轻声说：「霍临，我这几年想了很多。」
+「想通了什么？」
+「想通了，有些人错过了，不是因为他不好。」林疏转过头，目光落在霍临眼底，「而是因为当时我们都不够勇敢。」
+霍临的呼吸顿了一下。
+「那现在呢？」
+「现在。」林疏往前走了半步，月光落在两个人之间，「我想把错过的那些年，一点一点找回来。你愿意吗？」
+霍临愣了很久，然后低头，把没点的烟收进口袋，弯起眼睛笑了。
+「我等这句话，等了很久了。」
+零点刚过，城市的灯火次第熄灭。天台上，两个人并肩站在一起，影子在月光下慢慢重叠。
+这座城市的深夜，终于不再是一个人的心事。`},
+      {t:"第四章 · 天将明（待续）", body:null}
+    ]
+  },
+  {
+    id:"xinghai", title:"星海来信", pairing:"阿凛 × 朔",
+    tags:["科幻","宿命","浪漫"], genre:"科幻 · 浪漫",
+    desc:"观测站收到一段来自遥远星海的讯息，重复了一万次，只为指向山顶那座废弃的天文台。那里住着一个人，等一封信，等了整整十二年。而寄信的人，才刚刚抵达。",
+    status:"连载中", words:"1.2万字", chapters:"4章",
+    cover:"images/novel2.jpeg",
+    chapters:[
+      {t:"第一章 · 来自星海的讯息", body:`观测站的警报在凌晨三点四十分响起。
+「又来了。」阿凛揉了揉熬红的眼睛，把脸凑近屏幕。那段讯息他已经听了无数遍——一段单调的、规律的电波，像某种古老的摩尔斯电码，重复着一串同样的坐标。
+坐标指向山顶那座废弃的天文台。
+十二年了。从他第一次在父亲留下的记录里看到这串坐标开始，这段讯息就断断续续地抵达，雷打不动。整个观测站都认为那是一段没有意义的宇宙噪声，只有阿凛固执地相信，它在等一个回复。
+「又在听那个了？」同事路过，随口说，「阿凛，那就是一段噪声，别魔怔了。」
+「它不是噪声。」阿凛小声说，「它每天重复一万次，只为了指向同一个地方。这不是巧合。」
+他没有告诉任何人。十二年前，父亲弥留之际攥着他的手，反复念着一串数字——正是这串坐标。
+「有人在等你回信。」父亲说，「一定要……回给他。」
+阿凛站起身，抓过那件浅蓝色的旧宇航服外套，推门走进了夜色。今晚，他要去那座天文台看看。
+因为那串坐标对应的信，他其实已经写了十二年了。`},
+      {t:"第二章 · 旧天文台", body:`天文台比阿凛想象中更破败。屋顶漏着光，星图在墙上剥落，只有那台老式望远镜还倔强地指向夜空。
+阿凛推开锈住的门，月光从穹顶倾泻下来。
+「你来晚了。」
+一个声音从望远镜旁传来。阿凛吓了一跳，循声望去，看见一个紫发的年轻人坐在那里，深蓝制服上镶着金色的星纹，正抬头看他。
+「你、你是谁？」
+「朔。」那人笑了笑，声音像月光一样清冽，「等了你十二年的人。」
+阿凛愣在原地。「等我？」
+「嗯。」朔站起身，从怀里取出一封微微发光的信，「那段讯息，是我发的。我把它指向这里，是因为十二年前，有个人在这里留下了约定——他说，会有人来收信。」
+阿凛的心跳得飞快。「那个人……是我父亲。」
+「是你父亲。」朔轻轻地说，「他说，他儿子会给一个写了很多年信的人回信。他说那封信，值得等十二年。」
+阿凛的眼眶一下子热了。他想起父亲，想起那串背了十二年的数字，想起自己一笔一划写下的、却从来不知道收件人在哪里的信。
+「我……」他喉咙发紧，「我写了十二年的信，可是从来不知道，收件人长什么样子。」
+朔把那封发光的信递到他面前，月光落在信纸上，字迹竟和他笔下一模一样。
+「现在，你知道了。」朔说，「我是朔。来收你的信。」`},
+      {t:"第三章 · 回信", body:`天文台的月光很好，像是特意为这一夜亮的。
+阿凛和朔并肩坐在台阶上，把十二年来写的信一封封摊开。那些信很轻，却载着一个少年漫长的心事。
+「原来你写了这么多。」朔一封一封地看，指尖轻轻抚过字迹，「都是写给我的？」
+「是。」阿凛小声说，「我不知道你长什么样，不知道你在哪里，但我知道那段讯息在等我。我就想，也许有一天，能把它寄出去。」
+朔没有立刻说话。他抬起头，望着远处那条横亘夜空的星河，忽然说：「你知道吗，我来自很远的地方。」
+「多远的？」
+「远到……这封信要穿过好多颗星星，才能送到你手上。」朔转过头，目光很认真，「我等了十二年，是因为我相信，会有人愿意为一个素未谋面的人，写这么多信。」
+阿凛低下头，看着自己写满字的信纸，声音有些哑：「那……现在呢？信你收到了，我还能写吗？」
+朔笑了。「当然能。从今往后，你不用再寄到天文台了。」
+他伸出手，指尖覆上阿凛的掌心，凉凉的，却带着一种笃定的温度。
+「你可以直接写给我。我会在每一个你能看到星星的夜晚，来收信。」
+阿凛怔了怔，然后弯起眼睛，笑了。月光落在两个人身上，星河在他们头顶缓缓流转。
+那封穿越了光年的回信，终于在这一夜，抵达了收件人手中。`},
+      {t:"第四章 · 穿越光年（待续）", body:null}
+    ]
+  }
+];
+
+const ORDER = ["yuexia","xinji","lingdian","xinghai"];
+
+/* =====================================================
+   路由与渲染
+===================================================== */
+const bookGrid = document.getElementById("bookGrid");
+const emptyMessage = document.getElementById("emptyMessage");
+const updateList = document.getElementById("updateList");
+const viewBook = document.getElementById("view-book");
+const viewRead = document.getElementById("view-read");
+const navLinks = document.querySelectorAll(".nav-links a");
+const searchInput = document.getElementById("searchInput");
+
+function byId(id){ return NOVELS.find(n=>n.id===id); }
+function bookOrdered(){ return ORDER.map(id=>byId(id)); }
+
+function renderHome(){
+  bookGrid.innerHTML = bookOrdered().map(n=>`
+    <article class="book-card" onclick="go('book','${n.id}')" data-search="${n.title} ${n.pairing} ${n.tags.join(' ')} ${n.desc}">
+      <div class="cover">
+        <img src="${n.cover}" alt="${n.title}封面">
+        <div class="shade"><span class="ghost">进入阅读 →</span></div>
+      </div>
+      <div class="book-info">
+        <h3>${n.title}</h3>
+        <div class="pairing">${n.pairing}</div>
+        <p class="description">${n.desc}</p>
+        <div class="meta-row">${n.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <button class="read-cta" onclick="event.stopPropagation();go('read','${n.id}')">立即阅读</button>
+      </div>
+    </article>`).join('');
+
+  updateList.innerHTML = bookOrdered().map(n=>`
+    <div class="update-item" onclick="go('book','${n.id}')">
+      <span class="update-title">${n.title}</span>
+      <span class="update-chapter">${n.chapters[0].t}</span>
+      <span class="update-time">今日更新</span>
+      <span class="update-arrow">↗</span>
+    </div>`).join('');
+}
+
+function renderBook(id){
+  const n = byId(id);
+  viewBook.innerHTML = `
+    <div class="book-detail">
+      <button class="back-btn" onclick="go('home')">← 返回首页</button>
+      <div class="book-detail-head">
+        <div class="detail-cover"><img src="${n.cover}" alt="${n.title}封面"></div>
+        <div class="detail-copy">
+          <h1>${n.title}</h1>
+          <div class="detail-pairing">${n.pairing}　·　${n.genre}</div>
+          <div class="detail-tags">${n.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          <p class="detail-desc">${n.desc}</p>
+          <div class="detail-meta">
+            <div>状态<b>${n.status}</b></div>
+            <div>篇幅<b>${n.words}</b></div>
+            <div>章节<b>${n.chapters.length}</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chapter-list">
+      <h2>章节列表</h2>
+      <div class="chapter-grid">
+        ${n.chapters.map((c,i)=>`
+          <div class="chapter-item" onclick="go('read','${n.id}',${i})">
+            <span class="cn">${c.t}</span>
+            <span class="cd">${i===0?'最新试读':'FREE'}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderRead(id, idx){
+  const n = byId(id);
+  const i = Math.max(0, Math.min(n.chapters.length-1, idx));
+  const c = n.chapters[i];
+  const bodyHTML = c.body ? c.body.replace(/\n+/g,'</p><p>') : '';
+  const foot = c.body ? "" : "<p>本章更新中，敬请期待后续章节……</p>";
+
+  viewRead.innerHTML = `
+    <div class="reader">
+      <div class="reader-top">
+        <div class="reader-book" onclick="go('book','${n.id}')" style="cursor:pointer">
+          <img src="${n.cover}" alt="">
+          <div>
+            <div class="bt">${n.title}</div>
+            <div class="bs">${n.pairing}</div>
+          </div>
+        </div>
+        <div style="position:relative">
+          <button class="ctl-btn" onclick="toggleFontMenu(event)">Aa 字号</button>
+          <div class="font-menu" id="fontMenu">
+            <button data-fs="15" onclick="setFont(15)">小</button>
+            <button data-fs="17" onclick="setFont(17)">中</button>
+            <button data-fs="19" onclick="setFont(19)">大</button>
+            <button data-fs="21" onclick="setFont(21)">特大</button>
+          </div>
+        </div>
+      </div>
+      <div class="reader-title">
+        <div class="chapt">${c.t}</div>
+        <div class="divider">✦</div>
+      </div>
+      <div class="reader-body" id="readerBody">
+        <div class="hand">— ${n.title} —</div>
+        <p>${bodyHTML}${foot}</p>
+      </div>
+      <div class="reader-nav">
+        <button onclick="go('read','${n.id}',${i-1})" ${i===0?'disabled':''}>← 上一章</button>
+        <span class="center">${i+1} / ${n.chapters.length}</span>
+        <button onclick="go('read','${n.id}',${i+1})" ${i===n.chapters.length-1?'disabled':''}>下一章 →</button>
+      </div>
+    </div>`;
+}
+
+/* ============ 路由 ============ */
+function parseHash(){
+  const h = location.hash.replace(/^#/,'');
+  const parts = h.split('/');
+  return parts;
+}
+function go(view, id, idx){
+  if(view==='home'){ location.hash='home'; }
+  else if(view==='book'){ location.hash='book/'+id; }
+  else if(view==='read'){ location.hash='read/'+id+'/'+(idx||0); }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function render(){
+  const [view, id, idx] = parseHash();
+  const vHome = document.getElementById('view-home');
+  const vBook = document.getElementById('view-book');
+  const vRead = document.getElementById('view-read');
+
+  vHome.classList.toggle('show', view==='home' || view==='' );
+  vBook.classList.toggle('show', view==='book');
+  vRead.classList.toggle('show', view==='read');
+
+  navLinks.forEach(a=>a.classList.toggle('active', a.dataset.nav===view));
+
+  if(view==='book' && byId(id)) renderBook(id);
+  if(view==='read' && byId(id)) renderRead(id, parseInt(idx,10)||0);
+}
+window.addEventListener('hashchange', render);
+
+function scrollToWorks(){
+  go('home');
+  setTimeout(()=>{
+    const el = document.getElementById('featured');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  },60);
+}
+
+/* ============ 字号 ============ */
+function toggleFontMenu(e){
+  e.stopPropagation();
+  document.getElementById('fontMenu').classList.toggle('show');
+}
+document.addEventListener('click',()=>{
+  const fm=document.getElementById('fontMenu');
+  if(fm) fm.classList.remove('show');
+});
+function setFont(fs){
+  document.getElementById('readerBody').style.fontSize=fs+'px';
+  const btns=document.querySelectorAll('.font-menu button');
+  btns.forEach(b=>b.classList.toggle('on', parseInt(b.dataset.fs,10)===fs));
+}
+
+/* ============ 搜索 ============ */
+searchInput.addEventListener('input', function(){
+  const kw=this.value.trim().toLowerCase();
+  let visible=0;
+  document.querySelectorAll('.book-card').forEach(card=>{
+    const text=(card.innerText+' '+card.dataset.search).toLowerCase();
+    const hit=text.includes(kw);
+    card.hidden=!hit;
+    if(hit) visible++;
+  });
+  emptyMessage.hidden= visible!==0;
+});
+
+/* ============ 飘落花瓣 ============ */
+(function makePetals(){
+  const wrap=document.getElementById('petals');
+  const colors=['#e8dcff','#e9c3e4','#dfe7ff','#d7c9ff','#f3e7fa'];
+  for(let i=0;i<16;i++){
+    const p=document.createElement('span');
+    p.className='petal';
+    const s=8+Math.random()*10;
+    p.style.left=(Math.random()*100)+'%';
+    p.style.width=s+'px';
+    p.style.height=(s*1.2)+'px';
+    p.style.background=colors[i%colors.length];
+    p.style.borderRadius='50% 50% 50% 50% / 60% 60% 40% 40%';
+    p.style.setProperty('--sway',((Math.random()*120)-60)+'px');
+    p.style.setProperty('--spin',(Math.random()*360)+'deg');
+    p.style.animation=`fall ${12+Math.random()*12}s linear ${Math.random()*12}s infinite`;
+    wrap.appendChild(p);
+  }
+})();
+
+/* ============ 初始化 ============ */
+renderHome();
+render();
+</script>
+</body>
+</html>
